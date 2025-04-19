@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #282c34;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .calculator {
+            width: 340px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            background-color: #fff;
+            animation: fadeIn 1s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .calculator .display-container {
+            position: relative;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .calculator .display-container .expression {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            color: #888;
+            pointer-events: none;
+            box-sizing: border-box;
+        }
+        .calculator input {
+            width: 100%;
+            padding: 15px;
+            font-size: 24px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-align: right;
+            background-color: #f9f9f9;
+            box-sizing: border-box;
+        }
+        .calculator button {
+            width: 22%;
+            padding: 15px;
+            margin: 5px 1%;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #f0f0f0;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+        .calculator button:hover {
+            background-color: #ddd;
+        }
+        .calculator button:active {
+            background-color: #ccc;
+            transform: scale(0.98);
+        }
+        .calculator button:nth-child(4n+1) {
+            background-color: #ff8c00;
+            color: #fff;
+        }
+        .calculator button:nth-child(4n+1):hover {
+            background-color: #ff7b00;
+        }
+        .calculator button:nth-child(4n+1):active {
+            background-color: #ff6a00;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <div class="display-container">
+            <div class="expression" id="expression"></div>
+            <input type="text" id="display" disabled>
+        </div>
+        <button onclick="appendToDisplay('1')">1</button>
+        <button onclick="appendToDisplay('2')">2</button>
+        <button onclick="appendToDisplay('3')">3</button>
+        <button onclick="appendToDisplay('+')">+</button>
+        <button onclick="appendToDisplay('4')">4</button>
+        <button onclick="appendToDisplay('5')">5</button>
+        <button onclick="appendToDisplay('6')">6</button>
+        <button onclick="appendToDisplay('-')">-</button>
+        <button onclick="appendToDisplay('7')">7</button>
+        <button onclick="appendToDisplay('8')">8</button>
+        <button onclick="appendToDisplay('9')">9</button>
+        <button onclick="appendToDisplay('*')">*</button>
+        <button onclick="appendToDisplay('0')">0</button>
+        <button onclick="appendToDisplay('.')">.</button>
+        <button onclick="appendToDisplay('/')">/</button>
+        <button onclick="calculateResult()">=</button>
+        <button onclick="appendToDisplay('%')">%</button>
+        <button onclick="appendToDisplay('^')">^</button>
+        <button onclick="calculateSquareRoot()">√</button>
+        <button onclick="clearDisplay()">C</button>
+    </div>
+
+    <script>
+        document.addEventListener('keydown', function(event) {
+            const key = event.key;
+            if ((key >= '0' && key <= '9') || key === '.' || key === '+' || key === '-' || key === '*' || key === '/' || key === '%' || key === '^') {
+                appendToDisplay(key);
+            } else if (key === 'Enter') {
+                calculateResult();
+            } else if (key === 'Backspace') {
+                clearDisplay();
+            } else if (key === 'r' || key === 'R') {
+                calculateSquareRoot();
+            }
+        });
+
+        function clearDisplay() {
+            document.getElementById('display').value = '';
+            document.getElementById('expression').textContent = '';
+        }
+
+        function appendToDisplay(value) {
+            document.getElementById('display').value += value;
+        }
+
+        function calculateResult() {
+            const display = document.getElementById('display');
+            const expressionDiv = document.getElementById('expression');
+            try {
+                let expression = display.value;
+                expression = expression.replace('^', '**');
+                const result = eval(expression);
+                expressionDiv.textContent = expression.replace('**', '^');
+                display.value = parseFloat(result.toFixed(5));
+            } catch (e) {
+                display.value = 'Error';
+            }
+        }
+
+        function calculateSquareRoot() {
+            const display = document.getElementById('display');
+            const expressionDiv = document.getElementById('expression');
+            try {
+                const result = Math.sqrt(eval(display.value));
+                expressionDiv.textContent = `√(${display.value})`;
+                display.value = parseFloat(result.toFixed(5));
+            } catch (e) {
+                display.value = 'Error';
+            }
+        }
+    </script>
+</body>
+</html>
